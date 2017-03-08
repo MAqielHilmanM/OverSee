@@ -14,8 +14,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.smkn4bandung.oversee.R;
+import com.smkn4bandung.oversee.dao.AlarmDao;
 import com.smkn4bandung.oversee.receiver.RingtoneReceiver;
+import com.smkn4bandung.oversee.tools.PrefRepo;
 
+import java.security.PublicKey;
 import java.util.Calendar;
 
 public class AlarmActivity extends AppCompatActivity {
@@ -28,19 +31,18 @@ public class AlarmActivity extends AppCompatActivity {
     Calendar calendar;
     Intent my_intent;
     public static final String TAG = "MODUL ALARM";
+    private PrefRepo prefRepo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
         this.context = this;
+        prefRepo = new PrefRepo();
 
         update_text = (TextView) findViewById(R.id.update_text);
-        calendar = Calendar.getInstance();
         alarm_timepicker = (TimePicker) findViewById(R.id.timePicker);
-        alarmManager = (AlarmManager)  getSystemService(ALARM_SERVICE);
-
-        my_intent = new Intent(this.context, RingtoneReceiver.class);
 
         Button alarm_on = (Button) findViewById(R.id.alarm_on);
         alarm_on.setOnClickListener(new View.OnClickListener(){
@@ -53,17 +55,12 @@ public class AlarmActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     Log.wtf(TAG, "onClick: Hour: "+alarm_timepicker.getHour() );
                     Log.wtf(TAG, "onClick: Minute: "+alarm_timepicker.getMinute() );
-                    calendar.set(Calendar.HOUR_OF_DAY, alarm_timepicker.getHour());
-                    calendar.set(Calendar.MINUTE, alarm_timepicker.getMinute());
 
                     hour = alarm_timepicker.getHour();
                     minute = alarm_timepicker.getMinute();
                 }else {
                     Log.wtf(TAG, "onClick: CurHour: "+alarm_timepicker.getCurrentHour() );
                     Log.wtf(TAG, "onClick: CurMinute: "+alarm_timepicker.getCurrentMinute() );
-
-                    calendar.set(Calendar.HOUR_OF_DAY, alarm_timepicker.getCurrentHour());
-                    calendar.set(Calendar.MINUTE, alarm_timepicker.getCurrentMinute());
 
                     hour = alarm_timepicker.getCurrentHour();
                     minute = alarm_timepicker.getCurrentMinute();
@@ -81,13 +78,7 @@ public class AlarmActivity extends AppCompatActivity {
 
                 set_alarm_text("Alarm set to : " + hour_string + ":" + minute_string);
 
-                my_intent.putExtra("extra", "alarm on");
-
-                pending_intent = PendingIntent.getBroadcast(AlarmActivity.this, 0 ,
-                        my_intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                        pending_intent);
+                setOnlineAlarm(hour,minute);
 
             }
         });
@@ -102,6 +93,12 @@ public class AlarmActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void setOnlineAlarm(int hour,int minute) {
+        AlarmDao alarmDao = new AlarmDao(prefRepo.getPhoneId(),hour,minute,"ON");
+        prefRepo.setAlarm(alarmDao);
+    }
+
 
     public void unsetAlarm(Context context) {
 
@@ -120,6 +117,23 @@ public class AlarmActivity extends AppCompatActivity {
         my_receiver.putExtra("extra", "off");
 
         context.sendBroadcast(my_receiver);
+    }
+
+    public  void  setAlarm(Context context,int hour,int minute){
+        alarmManager = (AlarmManager)  context.getSystemService(ALARM_SERVICE);
+        my_intent = new Intent(context, RingtoneReceiver.class);
+        my_intent.putExtra("extra", "alarm on");
+
+        calendar = Calendar.getInstance();
+
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+
+        pending_intent = PendingIntent.getBroadcast(context, 0 ,
+                my_intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                pending_intent);
     }
 
     private void set_alarm_text(String output) {

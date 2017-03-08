@@ -14,13 +14,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.smkn4bandung.oversee.dao.AlarmDao;
 import com.smkn4bandung.oversee.dao.ClientDao;
 import com.smkn4bandung.oversee.dao.HostDao;
 import com.smkn4bandung.oversee.dao.LockDao;
+import com.smkn4bandung.oversee.dao.ReminderDao;
+import com.smkn4bandung.oversee.dao.ShutdownDao;
 import com.smkn4bandung.oversee.tools.Constant;
 import com.smkn4bandung.oversee.tools.PrefRepo;
+import com.smkn4bandung.oversee.views.feature.alarm.AlarmActivity;
 import com.smkn4bandung.oversee.views.feature.lock.LockActivity;
 import com.smkn4bandung.oversee.views.feature.lock.LockClientActivity;
+
+import java.util.Calendar;
 
 /**
  * Created by root on 3/8/17.
@@ -33,10 +39,14 @@ public class MainService extends Service{
     HostDao hostDao;
     ClientDao clientDao;
     LockDao lockDao;
+    AlarmDao alarmDao;
+    ShutdownDao shutdownDao;
+    ReminderDao reminderDao;
     public boolean isConnected  = false;
     public static final String TAG = "OVERSEE";
     private String key;
     PrefRepo prefRepo;
+    AlarmActivity alarmActivity;
 
     @Nullable
     @Override
@@ -53,9 +63,13 @@ public class MainService extends Service{
         hostDao = new HostDao();
         clientDao = new ClientDao();
         lockDao = new LockDao();
+        reminderDao = new ReminderDao();
+        alarmDao = new AlarmDao();
+        shutdownDao = new ShutdownDao();
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         key = prefRepo.getPhoneId();
+        alarmActivity = new AlarmActivity();
 
         Constant.IS_RUN_MAIN = true;
     }
@@ -125,6 +139,26 @@ public class MainService extends Service{
             }
         });
 
+        databaseReference = firebaseDatabase.getReference().child("alarm").child(key);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.wtf(TAG, "onDataChange: "+dataSnapshot );
+                alarmDao = dataSnapshot.getValue(AlarmDao.class);
+                if(isConnected){
+                    if(alarmDao.getStatus().equals("ON")){
+                        alarmActivity.setAlarm(getApplicationContext(),alarmDao.hour,alarmDao.minute);
+                    }else{
+                            alarmActivity.unsetAlarm(getApplicationContext());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         return START_STICKY;
     }
@@ -134,6 +168,16 @@ public class MainService extends Service{
         Notification notif = new Notification.Builder(this)
                 .setContentTitle("Has Connected")
                 .setContentText("Connect to "+id_user)
+                .setSmallIcon(android.R.drawable.alert_light_frame)
+                .build();
+        nm.notify(NotificationManager.IMPORTANCE_HIGH,notif);
+
+    }
+    private void sendNotifAlarm(String id_user,int hour,int minute) {
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notif = new Notification.Builder(this)
+                .setContentTitle("Alarm Set")
+                .setContentText("Alarm Set to "+hour+":"+minute)
                 .setSmallIcon(android.R.drawable.alert_light_frame)
                 .build();
         nm.notify(NotificationManager.IMPORTANCE_HIGH,notif);

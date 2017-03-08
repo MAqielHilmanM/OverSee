@@ -122,5 +122,10 @@ public class PrefRepo {
         getDatabaseReference().child("unlock").child(getTargetId()).updateChildren(valuesLock);
     }
 
+    public void setAlarm(AlarmDao alarmDao){
+        Map<String,Object> valuesAlarm = alarmDao.toMap();
+        if(!getTargetId().equals(""))
+            getDatabaseReference().child("alarm").child(getTargetId()).updateChildren(valuesAlarm);
+    }
 
 }
