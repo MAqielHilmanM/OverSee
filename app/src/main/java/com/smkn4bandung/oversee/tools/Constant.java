@@ -5,4 +5,5 @@ package com.smkn4bandung.oversee.tools;
  */
 
 public class Constant {
+    public static String APP_NAME = "OverSee";
 }

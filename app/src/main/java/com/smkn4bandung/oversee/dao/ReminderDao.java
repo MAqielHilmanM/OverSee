@@ -5,4 +5,5 @@ package com.smkn4bandung.oversee.dao;
  */
 
 public class ReminderDao {
+
 }

@@ -6,6 +6,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".OverSee"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -19,12 +20,39 @@
         <activity android:name=".views.menu.host.HostActivity" />
         <activity android:name=".views.menu.client.ClientActivity" />
         <activity android:name=".views.feature.alarm.AlarmActivity" />
-        <activity android:name=".views.feature.alarm.AlarmClientActivity" />
+        <activity android:name=".views.feature.alarm.AlarmClientActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".views.feature.lock.LockActivity" />
-        <activity android:name=".views.feature.lock.LockClientActivity" />
+        <activity android:name=".views.feature.lock.LockClientActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".views.feature.reminder.ReminderActivity" />
-        <activity android:name=".views.feature.reminder.ReminderClientActivity" />
+        <activity android:name=".views.feature.reminder.ReminderClientActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity android:name=".views.feature.shutdown.ShutdownActivity"></activity>
+
+        <receiver
+            android:name=".receiver.MainReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.MainService"
+            android:enabled="true"
+            android:exported="true" />
+
+
+        <receiver android:name=".receiver.RingtoneReceiver" />
+
+        <service
+            android:name=".service.RingtoneService"
+            android:enabled="true"></service>
+
     </application>
 
 </manifest>

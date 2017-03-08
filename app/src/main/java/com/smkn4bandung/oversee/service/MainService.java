@@ -1,8 +1,144 @@
 package com.smkn4bandung.oversee.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.smkn4bandung.oversee.dao.ClientDao;
+import com.smkn4bandung.oversee.dao.HostDao;
+import com.smkn4bandung.oversee.dao.LockDao;
+import com.smkn4bandung.oversee.tools.PrefRepo;
+import com.smkn4bandung.oversee.views.feature.lock.LockActivity;
+
 /**
  * Created by root on 3/8/17.
  */
 
-public class MainService {
+public class MainService extends Service{
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    HostDao hostDao;
+    ClientDao clientDao;
+    LockDao lockDao;
+    public boolean isConnected  = false;
+    public static final String TAG = "OVERSEE";
+    private String key;
+    PrefRepo prefRepo;
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        prefRepo = new PrefRepo();
+
+        hostDao = new HostDao();
+        clientDao = new ClientDao();
+        lockDao = new LockDao();
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        key = prefRepo.getPhoneId();
+    }
+
+    @Override
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+
+        databaseReference = firebaseDatabase.getReference().child("host").child(key);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.wtf("Oversee", "onDataChange: "+dataSnapshot.toString());
+                hostDao = dataSnapshot.getValue(HostDao.class);
+                if(!hostDao.getClient().equals("-"))
+                    sendNotifRequest(hostDao.getClient());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference = firebaseDatabase.getReference().child("client").child(key);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.wtf(TAG, "onDataChange: "+dataSnapshot.toString() );
+                clientDao = dataSnapshot.getValue(ClientDao.class);
+                if(clientDao.getConnection().equals("success")){
+                    isConnected = true;
+                }else {
+                    isConnected = false;
+                }
+                Log.wtf(TAG, "onStartCommand: "+isConnected );
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference = firebaseDatabase.getReference().child("unlock").child(key);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.wtf(TAG, "onDataChange: unlock : "+dataSnapshot.toString() );
+                if(isConnected){
+                    lockDao = dataSnapshot.getValue(LockDao.class);
+                    if(lockDao.getStatus().equals("ON")){
+                        Intent in = new Intent(getApplicationContext(), LockActivity.class);
+                        in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(in);
+                    }else{
+                        System.exit(0);
+                    }
+                    Toast.makeText(getApplicationContext(),"Unlock "+lockDao.getStatus()+" by"+lockDao.getHost(),Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        return START_STICKY;
+    }
+
+    private void sendNotifRequest(String id_user) {
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notif = new Notification.Builder(this)
+                .setContentTitle("Has Connected")
+                .setContentText("Connect to "+id_user)
+                .setSmallIcon(android.R.drawable.alert_light_frame)
+                .build();
+        nm.notify(NotificationManager.IMPORTANCE_HIGH,notif);
+
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }
