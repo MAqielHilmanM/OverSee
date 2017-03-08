@@ -9,13 +9,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".views.menu.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".views.menu.host.HostActivity" />
+        <activity android:name=".views.menu.client.ClientActivity" />
+        <activity android:name=".views.feature.alarm.AlarmActivity" />
+        <activity android:name=".views.feature.alarm.AlarmClientActivity" />
+        <activity android:name=".views.feature.lock.LockActivity" />
+        <activity android:name=".views.feature.lock.LockClientActivity" />
+        <activity android:name=".views.feature.reminder.ReminderActivity" />
+        <activity android:name=".views.feature.reminder.ReminderClientActivity" />
+        <activity android:name=".views.feature.shutdown.ShutdownActivity"></activity>
     </application>
 
 </manifest>
