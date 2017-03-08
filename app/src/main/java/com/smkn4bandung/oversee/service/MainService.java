@@ -25,6 +25,7 @@ import com.smkn4bandung.oversee.tools.PrefRepo;
 import com.smkn4bandung.oversee.views.feature.alarm.AlarmActivity;
 import com.smkn4bandung.oversee.views.feature.lock.LockActivity;
 import com.smkn4bandung.oversee.views.feature.lock.LockClientActivity;
+import com.smkn4bandung.oversee.views.feature.reminder.ReminderActivity;
 
 import java.util.Calendar;
 
@@ -47,6 +48,7 @@ public class MainService extends Service{
     private String key;
     PrefRepo prefRepo;
     AlarmActivity alarmActivity;
+    ReminderActivity reminderActivity;
 
     @Nullable
     @Override
@@ -67,7 +69,7 @@ public class MainService extends Service{
         alarmDao = new AlarmDao();
         shutdownDao = new ShutdownDao();
         firebaseDatabase = FirebaseDatabase.getInstance();
-
+        reminderActivity = new ReminderActivity();
         key = prefRepo.getPhoneId();
         alarmActivity = new AlarmActivity();
 
@@ -126,8 +128,12 @@ public class MainService extends Service{
                         Intent in = new Intent(getApplicationContext(), LockClientActivity.class);
                         in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(in);
+                        Constant.IS_RUN_LOCK = true;
                     }else{
-                        System.exit(0);
+                        if(Constant.IS_RUN_LOCK){
+                            System.exit(0);
+                            Constant.IS_RUN_LOCK = false;
+                        }
                     }
                     Toast.makeText(getApplicationContext(),"Lock "+lockDao.getStatus()+" by"+lockDao.getHost(),Toast.LENGTH_SHORT).show();
                 }
@@ -147,9 +153,32 @@ public class MainService extends Service{
                 alarmDao = dataSnapshot.getValue(AlarmDao.class);
                 if(isConnected){
                     if(alarmDao.getStatus().equals("ON")){
+                        sendNotifAlarm(alarmDao.getHost(),alarmDao.getHour(),alarmDao.getMinute());
                         alarmActivity.setAlarm(getApplicationContext(),alarmDao.hour,alarmDao.minute);
                     }else{
                             alarmActivity.unsetAlarm(getApplicationContext());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference = firebaseDatabase.getReference().child("reminder").child(key);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.wtf(TAG, "onDataChange: "+dataSnapshot );
+                reminderDao = dataSnapshot.getValue(ReminderDao.class);
+                if(isConnected){
+                    if(reminderDao.getStatus().equals("ON")){
+                        sendNotifReminder(reminderDao.getHost(),reminderDao.getHour(),reminderDao.getMinute());
+                        reminderActivity.setReminder(getApplicationContext(),reminderDao.hour,reminderDao.minute,reminderDao.getMessage());
+                    }else {
+                        reminderActivity.unsetReminder(getApplicationContext());
                     }
                 }
             }
@@ -178,6 +207,16 @@ public class MainService extends Service{
         Notification notif = new Notification.Builder(this)
                 .setContentTitle("Alarm Set")
                 .setContentText("Alarm Set to "+hour+":"+minute)
+                .setSmallIcon(android.R.drawable.alert_light_frame)
+                .build();
+        nm.notify(NotificationManager.IMPORTANCE_HIGH,notif);
+
+    }
+    private void sendNotifReminder(String id_user,int hour,int minute) {
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notif = new Notification.Builder(this)
+                .setContentTitle("Reminder Set")
+                .setContentText("Reminder Set to "+hour+":"+minute)
                 .setSmallIcon(android.R.drawable.alert_light_frame)
                 .build();
         nm.notify(NotificationManager.IMPORTANCE_HIGH,notif);

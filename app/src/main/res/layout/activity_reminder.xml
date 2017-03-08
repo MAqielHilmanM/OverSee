@@ -21,7 +21,7 @@
                 <TimePicker
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/timePicker"
+                    android:id="@+id/timePickerReminder"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true" />
 
@@ -32,6 +32,7 @@
                     android:text="Input your message here :"/>
 
                 <EditText
+                    android:id="@+id/etMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:lines="3"/>
@@ -47,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Alarm On"
-                    android:id="@+id/alarm_on"
+                    android:id="@+id/btnReminderOn"
                     android:clickable="true" />
 
                 <Button
@@ -55,61 +56,9 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="Alarm Off"
-                    android:id="@+id/alarm_off"
+                    android:id="@+id/btnReminderOff"
                     android:clickable="true" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Did you set the alarm ?"
-                    android:id="@+id/update_text"
-                    android:layout_below="@+id/alarm_on"
-                    android:layout_centerHorizontal="true"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
-            <!--<TextView-->
-                <!--android:layout_marginTop="20dp"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="REMINDER MODULE"-->
-                <!--android:gravity="center"/>-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Connected to CLIENT KEY"-->
-                <!--android:gravity="center"/>-->
-        <!--</LinearLayout>-->
-        <!--<LinearLayout-->
-            <!--android:layout_marginTop="50dp"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="vertical">-->
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="Your message here :"/>-->
-            <!--<EditText-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:lines="3"/>-->
-            <!--<Button-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="SET REMINDER"/>-->
-        <!--</LinearLayout>-->
-    <!--</LinearLayout>-->
 </LinearLayout>

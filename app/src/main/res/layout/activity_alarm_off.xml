@@ -36,7 +36,8 @@
                 android:id="@+id/btnUnsetAlarm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="UNSET ALARM"/>
+                android:text="UNSET ALARM"
+                android:onClick="OnClick"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

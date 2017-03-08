@@ -14,6 +14,7 @@ import com.smkn4bandung.oversee.R;
 import com.smkn4bandung.oversee.tools.Constant;
 import com.smkn4bandung.oversee.views.feature.alarm.AlarmActivity;
 import com.smkn4bandung.oversee.views.feature.alarm.AlarmClientActivity;
+import com.smkn4bandung.oversee.views.feature.reminder.ReminderClientActivity;
 
 /**
  * Created by root on 3/8/17.
@@ -42,6 +43,7 @@ public class RingtoneService extends Service{
         Log.i("LocalService", "Received start id " + startId + ": " + intent);
 
         String state = intent.getExtras().getString("extra");
+        String message = intent.getExtras().getString("message");
 
         Log.e("Ringtone extra is ", state);
 
@@ -88,7 +90,12 @@ public class RingtoneService extends Service{
             this.isRunning = true;
             this.startId = 0;
             notify_manager.notify(NotificationManager.INTERRUPTION_FILTER_PRIORITY,notification_popup);
-            Intent in = new Intent(getApplicationContext(),AlarmClientActivity.class);
+            Intent in ;
+            if(message.equals(""))
+            in = new Intent(getApplicationContext(),AlarmClientActivity.class);
+            else
+            in = new Intent(getApplicationContext(), ReminderClientActivity.class);
+            in.putExtra("message",message);
             in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(in);
 
@@ -115,7 +122,6 @@ public class RingtoneService extends Service{
 
         }else {
             Log.e("else","somehow you reached this");
-
         }
 
 

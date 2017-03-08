@@ -15,6 +15,7 @@ import com.smkn4bandung.oversee.dao.ClientDao;
 import com.smkn4bandung.oversee.dao.HostDao;
 import com.smkn4bandung.oversee.dao.LockDao;
 import com.smkn4bandung.oversee.dao.ReminderDao;
+import com.smkn4bandung.oversee.dao.ShutdownDao;
 
 import java.util.Map;
 
@@ -109,7 +110,7 @@ public class PrefRepo {
         getDatabaseReference().child("unlock").child(getPhoneId()).updateChildren(valuesLock);
 
         Map<String,Object> valuesOffline = new LockDao("-","OFF").toMap();
-        getDatabaseReference().child("offline").child(getPhoneId()).updateChildren(valuesOffline);
+        getDatabaseReference().child("shutdown").child(getPhoneId()).updateChildren(valuesOffline);
 
         Map<String,Object> valuesRemind = new ReminderDao("-",0,0,"OFF","-").toMap();
         getDatabaseReference().child("reminder").child(getPhoneId()).updateChildren(valuesRemind);
@@ -126,6 +127,17 @@ public class PrefRepo {
         Map<String,Object> valuesAlarm = alarmDao.toMap();
         if(!getTargetId().equals(""))
             getDatabaseReference().child("alarm").child(getTargetId()).updateChildren(valuesAlarm);
+    }
+    public void setReminder(ReminderDao reminderDao){
+        Map<String,Object> valuesReminder = reminderDao.toMap();
+        if(!getTargetId().equals(""))
+            getDatabaseReference().child("reminder").child(getTargetId()).updateChildren(valuesReminder);
+    }
+
+    public void setLock(ShutdownDao shutdown){
+        Map<String,Object> valuesShutDown =shutdown.toMap();
+        if(!getTargetId().equals(""))
+            getDatabaseReference().child("shutdown").child(getTargetId()).updateChildren(valuesShutDown);
     }
 
 }

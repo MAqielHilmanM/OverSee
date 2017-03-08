@@ -115,6 +115,7 @@ public class AlarmActivity extends AppCompatActivity {
         Intent my_receiver = new Intent(context, RingtoneReceiver.class);
 
         my_receiver.putExtra("extra", "off");
+        my_receiver.putExtra("message", "");
 
         context.sendBroadcast(my_receiver);
     }
@@ -123,6 +124,7 @@ public class AlarmActivity extends AppCompatActivity {
         alarmManager = (AlarmManager)  context.getSystemService(ALARM_SERVICE);
         my_intent = new Intent(context, RingtoneReceiver.class);
         my_intent.putExtra("extra", "alarm on");
+        my_intent.putExtra("message", "");
 
         calendar = Calendar.getInstance();
 
