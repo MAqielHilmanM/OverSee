@@ -22,8 +22,10 @@
                 android:text="LOCK MODULE"
                 android:gravity="center"/>
             <TextView
+                android:id="@+id/txtLockTargetKey"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
+                android:textSize="16sp"
                 android:text="Connected to CLIENT KEY"
                 android:gravity="center"/>
         </LinearLayout>
@@ -35,11 +37,13 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOCK DEVICE"/>
+                android:text="LOCK DEVICE"
+                android:onClick="onClickLock"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="UNLOCK DEVICE"/>
+                android:text="UNLOCK DEVICE"
+                android:onClick="onClickUnlock"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -10,6 +10,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.smkn4bandung.oversee.R;
+import com.smkn4bandung.oversee.tools.Constant;
 import com.smkn4bandung.oversee.views.feature.alarm.AlarmActivity;
 import com.smkn4bandung.oversee.views.feature.alarm.AlarmClientActivity;
 
@@ -22,6 +24,12 @@ public class RingtoneService extends Service{
     MediaPlayer media_song;
     int startId;
     Boolean isRunning = false;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Constant.IS_RUN_RINGTONE = true;
+    }
 
     @Nullable
     @Override
@@ -124,6 +132,6 @@ public class RingtoneService extends Service{
 
         super.onDestroy();
         this.isRunning = false;
-
+        Constant.IS_RUN_RINGTONE = false;
     }
 }

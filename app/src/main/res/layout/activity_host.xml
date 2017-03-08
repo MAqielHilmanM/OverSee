@@ -24,8 +24,10 @@
                 android:gravity="center_horizontal"
                 android:text="Your ID is : "/>
             <TextView
+                android:id="@+id/txtIdKey"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="32dp"
+                android:textSize="24sp"
                 android:gravity="center_horizontal"
                 android:text="UNIQUE KEY HERE"/>
         </LinearLayout>
@@ -38,19 +40,23 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alarm"/>
+                android:text="Alarm"
+                android:onClick="onClickAlarm"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lock"/>
+                android:text="Lock"
+                android:onClick="onClickMainLock\"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Reminder"/>
+                android:text="Reminder"
+                android:onClick="onClickReminder"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Shutdown"/>
+                android:text="Shutdown"
+                android:onClick="onClickShutdown"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

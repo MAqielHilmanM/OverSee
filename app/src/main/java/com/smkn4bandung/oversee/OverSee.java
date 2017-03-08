@@ -15,15 +15,10 @@ import java.security.PublicKey;
 
 public class OverSee extends Application{
     public static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        context = this;
-
-        PrefRepo prefRepo = new PrefRepo();
-        prefRepo.setPhoneId();
-
-        Intent bc = new Intent(getBaseContext(), MainReceiver.class);
-        sendBroadcast(bc);
+        context = getApplicationContext();
     }
 }

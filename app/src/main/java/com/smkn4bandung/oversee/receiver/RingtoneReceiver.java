@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.smkn4bandung.oversee.service.RingtoneService;
+
 /**
  * Created by root on 3/8/17.
  */
@@ -19,7 +21,7 @@ public class RingtoneReceiver extends BroadcastReceiver{
 
         Log.e("What is the key ?", get_your_string);
 
-        Intent service_intent = new Intent(context, RingtonePlayingService.class);
+        Intent service_intent = new Intent(context, RingtoneService.class);
 
         service_intent.putExtra("extra", get_your_string);
 

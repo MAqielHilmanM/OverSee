@@ -1,5 +1,11 @@
 package com.smkn4bandung.oversee.dao;
 
+import com.google.firebase.database.Exclude;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * Created by root on 3/8/17.
  */
@@ -50,5 +56,15 @@ public class AlarmDao {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Exclude
+    public Map<String,Object> toMap(){
+        HashMap<String,Object> result = new HashMap<>();
+        result.put("host",host);
+        result.put("hour",hour);
+        result.put("minute",minute);
+        result.put("status",status);
+        return result;
     }
 }

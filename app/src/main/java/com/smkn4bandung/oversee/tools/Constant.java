@@ -6,4 +6,6 @@ package com.smkn4bandung.oversee.tools;
 
 public class Constant {
     public static String APP_NAME = "OverSee";
+    public static boolean IS_RUN_MAIN = false;
+    public static boolean IS_RUN_RINGTONE = false;
 }

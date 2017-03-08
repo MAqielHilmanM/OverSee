@@ -17,8 +17,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.smkn4bandung.oversee.dao.ClientDao;
 import com.smkn4bandung.oversee.dao.HostDao;
 import com.smkn4bandung.oversee.dao.LockDao;
+import com.smkn4bandung.oversee.tools.Constant;
 import com.smkn4bandung.oversee.tools.PrefRepo;
 import com.smkn4bandung.oversee.views.feature.lock.LockActivity;
+import com.smkn4bandung.oversee.views.feature.lock.LockClientActivity;
 
 /**
  * Created by root on 3/8/17.
@@ -54,6 +56,8 @@ public class MainService extends Service{
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         key = prefRepo.getPhoneId();
+
+        Constant.IS_RUN_MAIN = true;
     }
 
     @Override
@@ -105,13 +109,13 @@ public class MainService extends Service{
                 if(isConnected){
                     lockDao = dataSnapshot.getValue(LockDao.class);
                     if(lockDao.getStatus().equals("ON")){
-                        Intent in = new Intent(getApplicationContext(), LockActivity.class);
+                        Intent in = new Intent(getApplicationContext(), LockClientActivity.class);
                         in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(in);
                     }else{
                         System.exit(0);
                     }
-                    Toast.makeText(getApplicationContext(),"Unlock "+lockDao.getStatus()+" by"+lockDao.getHost(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Lock "+lockDao.getStatus()+" by"+lockDao.getHost(),Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -140,5 +144,6 @@ public class MainService extends Service{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Constant.IS_RUN_MAIN = false;
     }
 }
